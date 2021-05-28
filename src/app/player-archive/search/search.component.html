@@ -1,0 +1,29 @@
+<section>
+  <h2 class="mat-h2">Search</h2>
+
+  <form (ngSubmit)="searchPlayer()">
+    <mat-form-field>
+      <mat-label>Enter player's id:</mat-label>
+      <input matInput
+             type="search"
+             [formControl]="searchForm">
+      <button *ngIf="searchForm.value"
+              mat-button
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              type="button"
+              (click)="clearInput()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button mat-icon-button
+            color="primary"
+            aria-label="Search players"
+            type="submit">
+      <mat-icon>search</mat-icon>
+    </button>
+  </form>
+</section>
+
