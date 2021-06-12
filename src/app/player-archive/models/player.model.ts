@@ -1,4 +1,4 @@
-export interface Player {
+export interface PlayerInfo {
   id: string;
   active: string;
   'profile-id': string;

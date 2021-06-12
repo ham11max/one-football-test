@@ -1,0 +1,25 @@
+<app-container-wrapper [callState]="playerInfoCallState">
+  <ng-container *ngIf="isActivePlayer(playerInfo) else playerIsNotAvailable">
+    <section>
+      <h3>Player info :</h3>
+
+      <ul class="player-list">
+        <li>
+          <strong>Id: </strong>
+          <span>{{playerInfo?.id}}</span>
+        </li>
+        <li>
+          <strong>Active: </strong>
+          <span>{{playerInfo?.active}}</span>
+        </li>
+      </ul>
+    </section>
+    <app-player-details [playerDetails]="(playerDetails$ | async)!"
+                        [playerDetailsCallState]="(playerDetailsCallState$ |async)!">
+    </app-player-details>
+  </ng-container>
+</app-container-wrapper>
+
+<ng-template #playerIsNotAvailable>
+  Player is not available
+</ng-template>

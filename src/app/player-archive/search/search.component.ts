@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { CallState } from '../models/call-state.model';
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PlayerDataService } from '../services/player-data.service';
 
 @Component({
@@ -8,16 +7,12 @@ import { PlayerDataService } from '../services/player-data.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent  {
-  readonly searchForm = new FormControl(this.playerDataService.searchText, {validators: Validators.required});
+export class SearchComponent {
+  readonly searchForm = new FormControl('');
 
   constructor(private readonly playerDataService: PlayerDataService) {}
 
   searchPlayer(): void {
     this.playerDataService.setSearchText(this.searchForm.value);
-  }
-
-  clearInput(): void {
-    this.searchForm.setValue('');
   }
 }

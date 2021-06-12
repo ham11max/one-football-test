@@ -1,0 +1,20 @@
+<app-container-wrapper [callState]="playerDetailsCallState">
+  <section *ngIf="playerDetails">
+    <h3>Player details:</h3>
+
+    <ul class="player-list">
+      <li>
+        <strong>Age: </strong>
+        <span>{{playerDetails.profile.age}}</span>
+      </li>
+      <li>
+        <strong>Role: </strong>
+        <span>{{playerDetails.profile.role}}</span>
+      </li>
+      <li>
+        <strong>Team: </strong>
+        <span>{{playerDetails.profile.team | titlecase}}</span>
+      </li>
+    </ul>
+  </section>
+</app-container-wrapper>

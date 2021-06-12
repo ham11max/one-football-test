@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+
+import { BehaviorSubject, EMPTY } from 'rxjs';
 import { catchError, distinctUntilChanged, filter, shareReplay, switchMap, tap } from 'rxjs/operators';
+
 import { PlayerHttpService } from './player-http.service';
 import { CallState } from '../models/call-state.model';
 
@@ -9,39 +11,44 @@ import { CallState } from '../models/call-state.model';
 })
 export class PlayerDataService {
   private readonly searchText$$ = new BehaviorSubject<string>('');
-  private readonly detailsCallState$$ = new BehaviorSubject<CallState>(CallState.Initial);
-  private readonly catchErrorHandler = this._catchErrorHandler.bind(this);
+  private readonly playerDetailsCallState$$ = new BehaviorSubject<CallState>(CallState.Initial);
+  private readonly playerInfoCallState$$ = new BehaviorSubject<CallState>(CallState.Initial);
 
-  readonly details$ = this.searchText$$.pipe(
+  readonly playerDetailsCallState$ = this.playerDetailsCallState$$.pipe(distinctUntilChanged());
+  readonly playerInfoCallState$ = this.playerInfoCallState$$.pipe(distinctUntilChanged());
+
+  readonly playerInfo$ = this.searchText$$.pipe(
     filter((text) => Boolean(text)),
-    distinctUntilChanged(),
-    tap(() => this.detailsCallState$$.next(CallState.Loading)),
+    tap(() => this.playerInfoCallState$$.next(CallState.Loading)),
     switchMap((name) => this.playerHttpService.getPlayerByName(name).pipe(
-      filter(({active}) => active === 'true'),
-      catchError(this.catchErrorHandler),
-      switchMap((player) => this.playerHttpService.getPlayerDetailsById(player['profile-id']).pipe(
-        catchError(this.catchErrorHandler)
-      )),
+      catchError(() => {
+        this.playerInfoCallState$$.next(CallState.Error);
+
+        return EMPTY;
+      })
     )),
-    tap(() => this.detailsCallState$$.next(CallState.Loaded)),
+    tap(() => this.playerInfoCallState$$.next(CallState.Loaded)),
     shareReplay({bufferSize: 1, refCount: true}),
   );
-  readonly detailsCallState$ = this.detailsCallState$$.pipe(distinctUntilChanged());
+
+  readonly playerDetails$ = this.playerInfo$.pipe(
+    filter(({active}) => active === 'true'),
+    tap(() => this.playerDetailsCallState$$.next(CallState.Loading)),
+    switchMap((player) => this.playerHttpService.getPlayerDetailsById(player['profile-id']).pipe(
+      catchError(() => {
+        this.playerDetailsCallState$$.next(CallState.Error);
+
+        return EMPTY;
+      })
+    )),
+    tap(() => this.playerDetailsCallState$$.next(CallState.Loaded)),
+    shareReplay({bufferSize: 1, refCount: true}),
+  );
 
   constructor(private readonly playerHttpService: PlayerHttpService) {
   }
 
   setSearchText(value: string): void {
     this.searchText$$.next(value);
-  }
-
-  get searchText(): string {
-    return this.searchText$$.value;
-  }
-
-  private _catchErrorHandler(): Observable<never> {
-    this.detailsCallState$$.next(CallState.Error);
-
-    return EMPTY;
   }
 }

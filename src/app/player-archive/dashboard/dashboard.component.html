@@ -1,17 +1,5 @@
 <app-search></app-search>
 
-<ng-container *ngIf="detailsCallState$ | async as callState">
-  <ng-container *ngIf="callState !== callStates.Error else errorRef">
-    <ng-container *ngIf="callState !== callStates.Loading else loadingRef">
-      <app-details *ngIf="details$ | async as details" [details]="details"></app-details>
-    </ng-container>
-  </ng-container>
-</ng-container>
-
-<ng-template #errorRef>
-  Error
-</ng-template>
-
-<ng-template #loadingRef>
-  Loading
-</ng-template>
+<app-player-info [playerInfo]="(playerInfo$ | async)!"
+                 [playerInfoCallState]="(playerInfoCallState$ | async)!">
+</app-player-info>
