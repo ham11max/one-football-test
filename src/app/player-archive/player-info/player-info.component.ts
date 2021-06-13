@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+
 import { PlayerInfo } from '../models/player.model';
 import { CallState } from '../models/call-state.model';
 import { PlayerDataService } from '../services/player-data.service';
@@ -18,7 +19,7 @@ export class PlayerInfoComponent {
 
   constructor(private readonly playerDataService: PlayerDataService) {}
 
-  isActivePlayer(player: PlayerInfo | null): boolean {
-    return player?.active === 'true';
+  get isActivePlayer(): boolean {
+    return this.playerInfo?.active === 'true';
   }
 }

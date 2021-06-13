@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, EMPTY } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 import { PlayerHttpService } from './player-http.service';
 import { CallState } from '../models/call-state.model';
@@ -14,8 +14,8 @@ export class PlayerDataService {
   private readonly playerDetailsCallState$$ = new BehaviorSubject<CallState>(CallState.Initial);
   private readonly playerInfoCallState$$ = new BehaviorSubject<CallState>(CallState.Initial);
 
-  readonly playerDetailsCallState$ = this.playerDetailsCallState$$.pipe(distinctUntilChanged());
-  readonly playerInfoCallState$ = this.playerInfoCallState$$.pipe(distinctUntilChanged());
+  readonly playerDetailsCallState$ = this.playerDetailsCallState$$.asObservable();
+  readonly playerInfoCallState$ = this.playerInfoCallState$$.asObservable();
 
   readonly playerInfo$ = this.searchText$$.pipe(
     filter((text) => Boolean(text)),
@@ -45,8 +45,7 @@ export class PlayerDataService {
     shareReplay({bufferSize: 1, refCount: true}),
   );
 
-  constructor(private readonly playerHttpService: PlayerHttpService) {
-  }
+  constructor(private readonly playerHttpService: PlayerHttpService) {}
 
   setSearchText(value: string): void {
     this.searchText$$.next(value);

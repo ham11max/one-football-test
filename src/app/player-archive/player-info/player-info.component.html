@@ -1,6 +1,6 @@
 <app-container-wrapper [callState]="playerInfoCallState">
-  <ng-container *ngIf="isActivePlayer(playerInfo) else playerIsNotAvailable">
-    <section>
+  <ng-container *ngIf="isActivePlayer else playerIsNotAvailable">
+    <section data-role="player-info-section">
       <h3>Player info :</h3>
 
       <ul class="player-list">
@@ -15,7 +15,7 @@
       </ul>
     </section>
     <app-player-details [playerDetails]="(playerDetails$ | async)!"
-                        [playerDetailsCallState]="(playerDetailsCallState$ |async)!">
+                        [playerDetailsCallState]="(playerDetailsCallState$ | async)!">
     </app-player-details>
   </ng-container>
 </app-container-wrapper>
